@@ -123,8 +123,8 @@ chezmoi doctor
 # Aplicar con output verbose para debugging
 chezmoi apply --dry-run --verbose
 
-# Reinicializar si hay problemas
-chezmoi init --force git@github.com:vigosan/new-dotfiles.git
+# Reinitialize if there are problems
+chezmoi init --force vigosan/new-dotfiles
 ```
 
 ### Verificar configuración
