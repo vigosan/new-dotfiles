@@ -52,10 +52,14 @@ osascript -e 'tell application "System Preferences" to quit'
 
 # Configure dock app
 echo "Setting dock..."
-# Dock icons to 32px
+# Dock icons to 48px
 defaults write com.apple.dock "tilesize" -int "48"
 # Disable recents in dock
 defaults write com.apple.dock "show-recents" -bool "false"
+# Enable magnification
+defaults write com.apple.dock "magnification" -bool "true"
+# Set magnification size to medium (64px)
+defaults write com.apple.dock "largesize" -int "64"
 
 if command -v dockutil >/dev/null 2>&1; then
   dockutil --no-restart --remove all
