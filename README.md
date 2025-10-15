@@ -8,7 +8,7 @@ This repository contains dotfiles configuration managed with chezmoi for synchro
 
 ```bash
 # Install chezmoi and initialize (all-in-one)
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:vigosan/new-dotfiles.git
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles
 ```
 
 **That's it!** The command above:
@@ -26,7 +26,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:vigosan/new-
 sh -c "$(curl -fsLS get.chezmoi.io)"
 
 # 2. Initialize from this repository
-chezmoi init --apply git@github.com:vigosan/new-dotfiles.git
+chezmoi init --apply vigosan/new-dotfiles
 ```
 
 ## Useful chezmoi commands
