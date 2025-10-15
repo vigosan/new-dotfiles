@@ -1,27 +1,51 @@
 #!/usr/bin/env zsh
 
+# ============================================================================
+# Environment Variables
+# ============================================================================
+
 export CLICOLOR=1
 export EDITOR=vim
 export GIT_EDITOR=vim
 export KEYTIMEOUT=1
 export LC_ALL=en_US.UTF-8
-# Base PATH - include local bin for chezmoi and other tools
-export PATH="$HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 export TERM="xterm-256color"
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-set -o emacs
+# Base PATH - include local bin for chezmoi and other tools
+export PATH="$HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+# ============================================================================
+# Sensitive Environment Variables
+# ============================================================================
+
+[[ -f ~/.zshrc.secrets ]] && source ~/.zshrc.secrets
+
+# ============================================================================
+# Completion System
+# ============================================================================
 
 zstyle ':completion:*' menu select
 zstyle ':completion:*' completer _complete
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'
 
-autoload -U compinit && compinit
+# Load and initialize completion system (optimized with caching)
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+
 autoload -U colors && colors
 autoload -U bashcompinit && bashcompinit
 autoload -U select-word-style
 select-word-style bash
 zmodload -i zsh/complist
+
+# ============================================================================
+# ZSH Options
+# ============================================================================
 
 unsetopt menu_complete
 unsetopt flowcontrol
@@ -41,16 +65,15 @@ setopt interactivecomments
 setopt share_history
 setopt auto_cd
 
+# ============================================================================
+# External Tool Integrations
+# ============================================================================
 
-# ssh - automatically add available SSH keys
-if ls ~/.ssh/id_* >/dev/null 2>&1; then
-  for key_file in ~/.ssh/id_*; do
-    [[ -f "$key_file" && ! "$key_file" =~ \.pub$ ]] && {
-      [[ -z $(ssh-add -L 2>/dev/null | grep -F "$(ssh-keygen -lf "$key_file" 2>/dev/null | awk '{print $2}')") ]] && ssh-add "$key_file" 2>/dev/null
-    }
-  done
-fi
-
+# Zoxide (cd replacement)
 eval "$(zoxide init --cmd z zsh)"
-eval "$(starship init zsh)"
+
+# Mise (runtime version manager)
 eval "$(mise activate zsh)"
+
+# Starship prompt (must be last)
+eval "$(starship init zsh)"
