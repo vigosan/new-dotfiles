@@ -43,11 +43,13 @@ setopt auto_cd
 
 
 # ssh - automatically add available SSH keys
-for key_file in ~/.ssh/id_*; do
-  [[ -f "$key_file" && ! "$key_file" =~ \.pub$ ]] && {
-    [[ -z $(ssh-add -L 2>/dev/null | grep -F "$(ssh-keygen -lf "$key_file" 2>/dev/null | awk '{print $2}')") ]] && ssh-add "$key_file" 2>/dev/null
-  }
-done
+if ls ~/.ssh/id_* >/dev/null 2>&1; then
+  for key_file in ~/.ssh/id_*; do
+    [[ -f "$key_file" && ! "$key_file" =~ \.pub$ ]] && {
+      [[ -z $(ssh-add -L 2>/dev/null | grep -F "$(ssh-keygen -lf "$key_file" 2>/dev/null | awk '{print $2}')") ]] && ssh-add "$key_file" 2>/dev/null
+    }
+  done
+fi
 
 eval "$(zoxide init --cmd z zsh)"
 eval "$(starship init zsh)"
