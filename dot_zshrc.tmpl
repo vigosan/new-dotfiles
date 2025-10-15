@@ -75,6 +75,35 @@ setopt share_history
 setopt auto_cd
 
 # ============================================================================
+# Zsh Plugins
+# ============================================================================
+
+# Load zsh-completions
+if [[ -d /opt/homebrew/share/zsh-completions ]]; then
+  fpath=(/opt/homebrew/share/zsh-completions $fpath)
+fi
+
+# Load autosuggestions
+[[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Load syntax highlighting (must be near the end)
+[[ -f /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && \
+  source /opt/homebrew/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
+# Load history substring search (must be after syntax highlighting)
+[[ -f /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]] && \
+  source /opt/homebrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+# Bind keys for history substring search
+if [[ -n "${key[Up]}" ]]; then
+  bindkey "${key[Up]}" history-substring-search-up
+fi
+if [[ -n "${key[Down]}" ]]; then
+  bindkey "${key[Down]}" history-substring-search-down
+fi
+
+# ============================================================================
 # External Tool Integrations
 # ============================================================================
 
