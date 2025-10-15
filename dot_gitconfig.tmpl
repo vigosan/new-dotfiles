@@ -1,6 +1,6 @@
 [user]
-  email = vigosan@gmail.com
-  name = Vicent Gozalbes
+  email = {{ .data.email | quote }}
+  name = {{ .data.name | quote }}
 [color]
   ui = 1
   diff = auto
@@ -17,4 +17,4 @@
   autoupdate = true
   enabled = true
 [pull]
-	rebase = true
+  rebase = true

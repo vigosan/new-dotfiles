@@ -1,111 +1,116 @@
 # Mac Setup with chezmoi
 
-Este repositorio contiene la configuración de dotfiles gestionada con chezmoi para sincronización entre múltiples Macs.
+This repository contains dotfiles configuration managed with chezmoi for synchronization across multiple Macs.
 
-## Instalación en un Mac nuevo
+## Setup on a new Mac
 
-### 1. Instalar chezmoi
+### Complete automatic setup
 
 ```bash
+# Install chezmoi and initialize (all-in-one)
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:vigosan/new-dotfiles.git
+```
+
+**That's it!** The command above:
+- ✅ Installs chezmoi
+- ✅ Prompts for your email and name for git
+- ✅ Applies all configuration
+- ✅ Installs Homebrew automatically
+- ✅ Installs all packages from Brewfile
+- ✅ Configures zsh, git, Zed, etc.
+
+### Manual setup (alternative)
+
+```bash
+# 1. Install chezmoi first
 sh -c "$(curl -fsLS get.chezmoi.io)"
-```
 
-### 2. Inicializar desde este repositorio
-
-```bash
-# Usando SSH (recomendado para desarrollo activo)
+# 2. Initialize from this repository
 chezmoi init --apply git@github.com:vigosan/new-dotfiles.git
-
-# O usando HTTPS (solo para instalación inicial sin cambios frecuentes)
-# chezmoi init --apply https://github.com/vigosan/new-dotfiles.git
 ```
 
-### 3. Ejecutar bootstrap de dotfiles existente
+## Useful chezmoi commands
+
+### Basic operations
 
 ```bash
-bash -c "$(curl -fsSL 'https://raw.githubusercontent.com/vigosan/dotfiles/main/bootstrap.sh')"
-```
-
-## Comandos útiles de chezmoi
-
-### Operaciones básicas
-
-```bash
-# Ver estado de archivos gestionados
+# Check status of managed files
 chezmoi status
 
-# Ver archivos que gestiona chezmoi
+# List files managed by chezmoi
 chezmoi managed
 
-# Ver diferencias entre archivos fuente y destino
+# View differences between source and target files
 chezmoi diff
 
-# Aplicar cambios a archivos destino
+# Apply changes to target files
 chezmoi apply
 
-# Aplicar cambios con preview (dry-run)
+# Preview changes (dry-run)
 chezmoi apply --dry-run
 ```
 
-### Gestión de archivos
+### File management
 
 ```bash
-# Agregar un archivo nuevo a chezmoi
-chezmoi add ~/.config/archivo
+# Add a new file to chezmoi
+chezmoi add ~/.config/file
 
-# Editar un archivo gestionado
-chezmoi edit ~/.archivo
+# Edit a managed file
+chezmoi edit ~/.file
 
-# Ver la configuración actual
+# View current configuration
 chezmoi data
 ```
 
-### Sincronización entre máquinas
+### Synchronization between machines
 
 ```bash
-# Actualizar desde el repositorio remoto
+# Update from remote repository
 chezmoi update
 
-# Solo hacer pull sin aplicar cambios
+# Pull only without applying changes
 chezmoi git pull
 
-# Hacer commit y push de cambios locales
+# Commit and push local changes
 chezmoi git add .
-chezmoi git commit -m "Descripción del cambio"
+chezmoi git commit -m "Change description"
 chezmoi git push
 ```
 
 ## Estructura del repositorio
 
+### Archivos de configuración
 - `dot_*` → archivos que van en el home directory como `.archivo`
-- `symlink_dot_*` → symlinks que apuntan a archivos en `~/.dotfiles`
-- `executable_*` → archivos ejecutables
+- `dot_*.tmpl` → templates que se personalizan por máquina
+- `dot_config/` → configuraciones de aplicaciones (`~/.config/`)
 - `private_dot_*` → archivos privados (permisos 600)
 
-## Integración con dotfiles existentes
+### Scripts automatizados
+- `run_onchange_*.sh.tmpl` → scripts que se ejecutan cuando cambian
+- `.chezmoi.toml.tmpl` → configuración personalizable de chezmoi
+- `.chezmoidata.toml` → datos por defecto para templates
 
-Este setup funciona junto con el sistema de dotfiles en `~/.dotfiles` que proporciona:
+### Archivos actuales gestionados
+- ✅ `.gitconfig` (personalizable por máquina)
+- ✅ `.zshrc` (configuración optimizada de shell)
+- ✅ `Brewfile` (paquetes y aplicaciones)
+- ✅ `.config/zed/settings.json` (editor Zed)
+- ✅ Scripts de instalación automática
 
-- Scripts de configuración automatizada para cada aplicación
-- Gestión de paquetes via Homebrew
-- Configuración de preferencias del sistema macOS
-- Setup del entorno de desarrollo (Node.js, vim, etc.)
+## Personalización por máquina
 
-### Comandos del sistema dotfiles existente
+El setup incluye templates que se personalizan automáticamente:
 
-```bash
-# Actualizar todas las configuraciones
-cd ~/.dotfiles && ./update.sh
+**Durante la instalación te pregunta:**
+- Email para git
+- Nombre para git
 
-# Setup inicial completo
-cd ~/.dotfiles && ./bootstrap.sh
-
-# Setup de componentes específicos
-~/.dotfiles/zsh/setup.sh      # Configuración zsh
-~/.dotfiles/packages/setup.sh # Instalar/actualizar paquetes brew
-~/.dotfiles/vim/setup.sh      # Configuración vim
-~/.dotfiles/zed/setup.sh      # Configuración Zed editor
-```
+**Se configuran automáticamente:**
+- Git con tus datos personales
+- Shell zsh optimizado
+- Editor Zed con preferencias
+- Todas las aplicaciones del Brewfile
 
 ## Troubleshooting
 
@@ -119,17 +124,20 @@ chezmoi doctor
 chezmoi apply --dry-run --verbose
 
 # Reinicializar si hay problemas
-chezmoi init --force https://github.com/username/dotfiles-chezmoi.git
+chezmoi init --force git@github.com:vigosan/new-dotfiles.git
 ```
 
-### Verificar symlinks
+### Verificar configuración
 
 ```bash
-# Ver hacia dónde apunta un symlink
-ls -la ~/.zshrc
+# Ver datos disponibles para templates
+chezmoi data
 
-# Verificar que el archivo destino existe
-ls -la ~/.dotfiles/zsh/zshrc
+# Ver archivos que gestiona chezmoi
+chezmoi managed
+
+# Verificar templates antes de aplicar
+chezmoi execute-template < ~/.local/share/chezmoi/dot_gitconfig.tmpl
 ```
 
 ## Flujo de trabajo para cambios
@@ -147,7 +155,16 @@ ls -la ~/.dotfiles/zsh/zshrc
 
 ## Notas importantes
 
-- Este setup combina chezmoi para sincronización con el sistema dotfiles existente para automatización
-- Los archivos importantes usan symlinks hacia `~/.dotfiles` para mantener compatibilidad
-- Nuevas configuraciones Mac-específicas se pueden gestionar directamente con chezmoi
-- Siempre verifica que los cambios funcionen localmente antes de hacer push
+- ✅ **Setup completamente automático**: Un solo comando instala todo
+- ✅ **Personalización por máquina**: Templates se adaptan automáticamente
+- ✅ **Independiente**: No requiere repositorios externos
+- ✅ **Escalable**: Estructura preparada para añadir más configuraciones
+- ⚠️ **Verificar cambios**: Siempre prueba localmente antes de hacer push
+
+## Próximos pasos
+
+Para expandir este setup puedes añadir:
+- Configuración SSH con `private_dot_ssh/`
+- Más aplicaciones al Brewfile
+- Configuraciones condicionales (trabajo vs personal)
+- Encryption con Age para datos sensibles
