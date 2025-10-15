@@ -1,0 +1,20 @@
+[user]
+  email = vigosan@gmail.com
+  name = Vicent Gozalbes
+[color]
+  ui = 1
+  diff = auto
+[merge]
+  tool = vimdiff
+[help]
+  autocorrect = 1
+[push]
+  default = current
+[core]
+  ignorecase = false
+  whitespace = -trailing-space
+[rerere]
+  autoupdate = true
+  enabled = true
+[pull]
+	rebase = true
