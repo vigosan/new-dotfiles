@@ -43,3 +43,87 @@ if [ -f "$HOME/Brewfile" ]; then
 else
   echo "Brewfile not found at $HOME/Brewfile"
 fi
+
+# Configure macOS defaults
+echo "Setting macOS defaults..."
+
+# Close any open System Preferences panes
+osascript -e 'tell application "System Preferences" to quit'
+
+# Configure dock app
+echo "Setting dock..."
+if command -v dockutil >/dev/null 2>&1; then
+  dockutil --no-restart --remove all
+  dockutil --no-restart --add "/System/Applications/Launchpad.app"
+  dockutil --no-restart --add "/Applications/Brave Browser.app"
+  dockutil --no-restart --add "/System/Applications/Mail.app"
+  dockutil --no-restart --add "/System/Applications/Calendar.app"
+  dockutil --no-restart --add "/System/Applications/Music.app"
+  dockutil --no-restart --add "/Applications/Slack.app"
+  dockutil --no-restart --add "/Applications/iTerm.app"
+  dockutil --no-restart --add "/Applications/Fork.app"
+  dockutil --no-restart --add "/System/Applications/System Settings.app"
+  dockutil --no-restart --add '~/Documents'
+  dockutil --no-restart --add '~/Downloads'
+fi
+
+## Screen
+# Save screenshots to the desktop
+defaults write com.apple.screencapture "disable-shadow" -bool "true" # Disable shadow in screenshots
+defaults write com.apple.screencapture location -string "${HOME}/Desktop"
+# Enable subpixel font rendering on non-Apple LCDs
+defaults write NSGlobalDomain AppleFontSmoothing -int 2
+
+## General UI/UX
+# Disable auto-correct
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+# Set sidebar icon size to medium
+defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
+
+## Menu Bar
+# Only show time
+defaults write com.apple.menuextra.clock "DateFormat" -string "\"HH:mm:ss\""
+
+## Keyboard
+# Map Caps Lock to Control
+defaults -currentHost write -g com.apple.keyboard.modifiermapping.1452-0-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
+# Alternative method for some keyboards
+defaults -currentHost write -g com.apple.keyboard.modifiermapping.0-0-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
+
+# Trackpad
+defaults write com.apple.AppleMultitouchTrackpad "TrackpadThreeFingerDrag" -bool "true" # Drag windows with 3 fingers
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool "true" # Tap to click
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int "1" # Tap to click
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int "1" # Tap to click
+defaults write -g com.apple.swipescrolldirection -bool "false" # Disable natural scroll
+
+## Finder
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+# When performing a search, search the current folder by default
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+# Disable the warning when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+# Disable the warning before emptying the Trash
+defaults write com.apple.finder WarnOnEmptyTrash -bool false
+# New Finder windows show home directory
+defaults write com.apple.finder NewWindowTargetPath -string "file://{{ .chezmoi.homeDir }}/"
+
+## Mail
+# Mark all messages as read when opening a conversation
+defaults write com.apple.mail ConversationViewMarkAllAsRead -bool true
+# Show most recent message at the top in conversations
+defaults write com.apple.mail ConversationViewSortDescending -bool true
+
+# Restart affected applications
+echo "Restarting affected applications..."
+for app in "Dock" "Finder" "Mail" "SystemUIServer"; do
+  killall "${app}" &> /dev/null
+done
+
+echo "macOS configuration completed!"
