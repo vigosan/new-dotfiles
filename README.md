@@ -64,11 +64,18 @@ chezmoi managed         # List managed files
 **Packages:**
 - Development tools (git, neovim, mise)
 - Applications (1Password, Docker, Raycast, etc.)
-- Mac App Store apps (Xcode, Slack, etc.)
+- Mac App Store apps (manual install required)
 
 **Profile-specific packages:**
 - **Work profile**: Postman (API development)
 - **Personal profile**: Audacity (audio editing), Soulseek (music)
+
+**Mac App Store apps:**
+After setup, manually install or login to App Store and uncomment in Brewfile:
+- Keynote, Numbers, Pages (productivity)
+- Pixelmator Pro (image editing)
+- Slack (communication)
+- Xcode (development)
 
 ## Structure
 
