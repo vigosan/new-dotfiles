@@ -4,200 +4,268 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a chezmoi repository used for managing dotfiles and system configuration across multiple Mac machines. It serves as a bridge between an existing comprehensive dotfiles setup (`~/.dotfiles`) and chezmoi's declarative configuration management system.
+This is a standalone chezmoi repository for managing dotfiles and macOS system configuration across multiple Mac machines. It provides automated setup for a complete development environment with personalized configurations.
 
 ## Architecture
 
-### Current Setup
+### System Components
 - **chezmoi source directory**: `/Users/vicent/.local/share/chezmoi` (this repository)
 - **Target directory**: `/Users/vicent` (home directory)
-- **Existing dotfiles**: `/Users/vicent/.dotfiles` (comprehensive setup with organized components)
-- **Configuration**: Uses default chezmoi configuration (no custom `chezmoi.toml` yet)
+- **Configuration templates**: Uses `.chezmoi.toml.tmpl` for personalization prompts
+- **Data storage**: `.chezmoidata.toml` stores personalized values (git name, email, work profile)
 
-### Migration Strategy
-The repository is currently in a transition phase from traditional dotfiles to chezmoi:
-- Uses symlinks to connect chezmoi with existing dotfiles structure
-- Currently manages only `.zshrc` via `symlink_dot_zshrc`
-- Existing dotfiles contain setup scripts for: vim, zed, osx, claude, packages, node, zsh
+### Key Features
+- **Profile-based configuration**: Work vs personal profiles affect which apps get installed
+- **One-command setup**: `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles`
+- **Automated package installation**: Brewfile with conditional packages based on profile
+- **macOS system defaults**: Comprehensive defaults for Dock, Finder, trackpad, keyboard, etc.
+- **Template-based personalization**: Git config and Brewfile use templates with user-specific data
 
 ## Common Commands
 
-### Basic chezmoi Operations
+### Daily Usage
 ```bash
-# Check status and managed files
-chezmoi status
-chezmoi managed
+# Sync changes from remote repository and apply
+chezmoi update
 
-# View differences between managed files and targets
+# View what would change before applying
+chezmoi status
 chezmoi diff
 
-# Apply changes to target files
+# Apply changes to home directory
 chezmoi apply
 
-# Add new files to management
+# Edit managed files (opens in $EDITOR)
+chezmoi edit ~/.zshrc
+chezmoi edit ~/.config/zed/settings.json
+
+# List all managed files
+chezmoi managed
+```
+
+### Adding New Files to Management
+```bash
+# Add a file to chezmoi (creates dot_filename)
 chezmoi add ~/.filename
 
-# Edit managed files
-chezmoi edit ~/.filename
+# Add with template support (creates dot_filename.tmpl)
+chezmoi add --template ~/.gitconfig
 
-# View chezmoi configuration and data
-chezmoi data
+# Add executable file (creates executable_filename)
+chezmoi add --template ~/.local/bin/script
 ```
 
-### Development Workflow
+### Making Changes and Syncing
 ```bash
-# Check what files are currently managed
-chezmoi managed
+# Commit and push changes to repository
+chezmoi git add .
+chezmoi git commit -m "Update configuration"
+chezmoi git push
 
-# View current configuration
-chezmoi data
-
-# Add a new file to chezmoi management
-chezmoi add ~/.config/filename
-
-# Create a symlink-managed file (like existing zshrc)
-echo "/path/to/actual/file" > symlink_dot_filename
-
-# Apply all changes
-chezmoi apply
-
-# Commit changes to git
-git add . && git commit -m "Add filename configuration"
+# Or use standard git commands in source directory
+cd ~/.local/share/chezmoi
+git add .
+git commit -m "Update configuration"
+git push
 ```
 
-### Integration with Existing Dotfiles
+### Testing and Debugging
 ```bash
-# The existing dotfiles system uses these commands:
-cd ~/.dotfiles && ./update.sh      # Update all configurations
-cd ~/.dotfiles && ./bootstrap.sh   # Initial setup
+# Dry-run to see what would be applied
+chezmoi apply --dry-run --verbose
 
-# Individual component setup:
-~/.dotfiles/zsh/setup.sh           # Setup zsh configuration
-~/.dotfiles/packages/setup.sh      # Install/update brew packages
-~/.dotfiles/vim/setup.sh           # Setup vim configuration
-~/.dotfiles/zed/setup.sh           # Setup Zed editor configuration
+# Check chezmoi configuration and system state
+chezmoi doctor
+
+# Test template rendering
+chezmoi execute-template < ~/.local/share/chezmoi/dot_gitconfig.tmpl
+
+# View current configuration data
+chezmoi data
 ```
 
 ## File Structure and Naming Conventions
 
-### chezmoi File Naming
+### chezmoi File Naming Patterns
 - `dot_filename` → `.filename` in home directory
-- `symlink_dot_filename` → symlink to `.filename` in home directory
+- `dot_filename.tmpl` → `.filename` with template processing
 - `executable_filename` → executable file in home directory
 - `private_dot_filename` → private `.filename` (permissions 600)
+- `run_onchange_*` → script that runs when the file content changes
+- `run_once_*` → script that runs only once during initial setup
 
-### Current Managed Files
-- `symlink_dot_zshrc` → symlinks to `~/.dotfiles/zsh/zshrc`
-
-### Existing Dotfiles Structure
+### Repository Structure
 ```
-~/.dotfiles/
-├── bootstrap.sh        # Initial setup script
-├── update.sh          # Update and sync script
-├── README.md          # Installation and usage instructions
-├── CLAUDE.md          # Comprehensive development guidelines
-├── zsh/               # Zsh configuration and setup
-├── vim/               # Vim configuration and setup
-├── zed/               # Zed editor configuration
-├── claude/            # Claude-specific configurations
-├── node/              # Node.js and npm configurations
-├── osx/               # macOS system preferences
-├── packages/          # Homebrew and package management
-└── scripts/           # Utility scripts
+.
+├── .chezmoi.toml.tmpl                      # Prompts for user data (name, email, work profile)
+├── .chezmoidata.toml                       # Stores personalized data values
+├── Brewfile.tmpl                           # Homebrew package definitions (conditional)
+├── dot_gitconfig.tmpl                      # Git configuration (personalized)
+├── dot_zshrc                               # Zsh shell configuration
+├── dot_config/
+│   └── zed/settings.json                   # Zed editor settings
+└── run_onchange_after_apply_install-packages.sh.tmpl  # Package installation and macOS setup
 ```
 
-## Best Practices for This Repository
+### Currently Managed Files
+- `.gitconfig` - Git configuration with personalized name/email
+- `.zshrc` - Zsh configuration with zoxide, mise, starship
+- `.config/zed/settings.json` - Zed editor settings
+- `Brewfile` - Homebrew packages (profile-dependent)
 
-### Adding New Managed Files
+### Template Variables
+Templates have access to these variables via `.data`:
+- `{{ .data.name }}` - User's full name
+- `{{ .data.email }}` - User's email address
+- `{{ .data.work }}` - Boolean for work vs personal profile
+- `{{ .chezmoi.homeDir }}` - Home directory path
 
-1. **For files that should link to existing dotfiles**:
+## Working with This Repository
+
+### Adding New Configuration Files
+
+1. **Non-templated files** (same on all machines):
    ```bash
-   # Create symlink file pointing to existing dotfile
-   echo "~/.dotfiles/app/configfile" > symlink_dot_configfile
-   git add symlink_dot_configfile
+   # Add file directly
+   chezmoi add ~/.config/app/config.json
+
+   # This creates: dot_config/app/config.json
    ```
 
-2. **For standalone configuration files**:
+2. **Templated files** (personalized per machine):
    ```bash
-   # Add file directly to chezmoi
-   chezmoi add ~/.configfile
+   # Add with template support
+   chezmoi add --template ~/.someconfig
+
+   # Edit the created .tmpl file to add template variables
+   # Example: {{ .data.email }} or {{ .data.work }}
    ```
 
-3. **For executable scripts**:
+3. **Profile-specific packages** (work vs personal):
    ```bash
-   # Add as executable
-   chezmoi add --template ~/.local/bin/script
+   # Edit Brewfile.tmpl and add to appropriate section:
+   {{- if .data.work }}
+   cask 'work-app'
+   {{- else }}
+   cask 'personal-app'
+   {{- end }}
    ```
 
-### Configuration Management
+### Modifying macOS Defaults
 
-- **Symlink strategy**: Continue using symlinks for files that are actively maintained in `~/.dotfiles`
-- **Direct management**: Use direct chezmoi management for new Mac-specific configurations
-- **Templates**: Use chezmoi templates for files that need to vary between machines
+The `run_onchange_after_apply_install-packages.sh.tmpl` script handles:
+- Homebrew installation and package management
+- macOS system preferences (Dock, Finder, trackpad, keyboard, etc.)
+- Application defaults (Safari, Mail, etc.)
 
-### Git Workflow
+When modifying this file:
+- The script runs automatically when its content changes
+- Use `defaults write` commands for system preferences
+- Always restart affected applications at the end
+- Test changes on current machine before committing
 
+### Template Development
+
+When creating or editing `.tmpl` files:
 ```bash
-# Always check status before changes
-git status
+# Test template rendering before applying
+chezmoi execute-template < file.tmpl
 
-# Add new managed files
-git add .
+# Check what data is available
+chezmoi data
 
-# Commit with descriptive messages
-git commit -m "Add application_name configuration"
-
-# The repository is configured for sharing between multiple Macs
-# Push changes to sync with other machines
-git push origin main
+# Common template patterns:
+# - Conditional: {{- if .data.work }}...{{- end }}
+# - Variable: {{ .data.email | quote }}
+# - Home dir: {{ .chezmoi.homeDir }}
 ```
 
-## System Integration
+## New Machine Setup
 
-### Existing Dotfiles Integration
-This chezmoi repository coexists with the comprehensive dotfiles system in `~/.dotfiles`. The existing system provides:
-
-- **Automated setup scripts** for each application
-- **Package management** via Homebrew
-- **System preferences** configuration for macOS
-- **Development environment** setup (Node.js, vim, etc.)
-
-### Machine Synchronization
 To set up a new Mac with this configuration:
 
-1. **Install chezmoi**: `sh -c "$(curl -fsLS get.chezmoi.io)"`
-2. **Initialize from this repository**: `chezmoi init --apply https://github.com/username/dotfiles-chezmoi.git`
-3. **Run existing dotfiles setup**:
-   ```bash
-   bash -c "$(curl -fsSL 'https://raw.githubusercontent.com/vigosan/dotfiles/main/bootstrap.sh')"
-   ```
-
-## Troubleshooting
-
-### Common Issues
-- **Symlink not working**: Ensure the target file exists in `~/.dotfiles`
-- **Permissions issues**: Use `private_` prefix for sensitive files
-- **Template errors**: Check template syntax in `.tmpl` files
-
-### Debugging Commands
 ```bash
-# Verbose output for troubleshooting
-chezmoi apply --dry-run --verbose
-
-# Check chezmoi's view of the system
-chezmoi doctor
-
-# Compare source and target states
-chezmoi diff --verbose
+# One-command setup (installs chezmoi, clones repo, applies config)
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles
 ```
 
-## Development Philosophy
+This will:
+1. Prompt for git name, email, and work profile
+2. Install Homebrew (if not present)
+3. Install all packages from Brewfile based on profile
+4. Apply all configuration files
+5. Configure macOS system defaults
+6. Set up Dock with essential applications
 
-This repository follows the development guidelines established in `~/.dotfiles/CLAUDE.md`, emphasizing:
+## Important Implementation Details
 
-- **Incremental progress**: Add files to chezmoi management gradually
-- **Existing pattern adoption**: Learn from and integrate with the established dotfiles system
-- **Simplicity**: Use straightforward approaches over complex abstractions
-- **Testing**: Verify changes work on the current machine before committing
+### Package Installation Script (`run_onchange_after_apply_install-packages.sh.tmpl`)
 
-The goal is to enhance the existing dotfiles workflow with chezmoi's cross-machine synchronization capabilities while preserving the organized structure and automation scripts already in place.
+This script is the heart of system setup and runs whenever its content changes. It:
+
+1. **Installs Homebrew** - Detects architecture (Apple Silicon vs Intel) and installs appropriately
+2. **Installs packages** - Runs `brew bundle` against `~/Brewfile` (generated from template)
+3. **Configures macOS defaults** - Sets preferences for:
+   - Dock (icon size, magnification, recents, app layout with dockutil)
+   - Safari (show full URL)
+   - Screenshots (no shadow, save to Desktop)
+   - Keyboard (Caps Lock → Control)
+   - Trackpad (3-finger drag, tap to click, natural scroll)
+   - Finder (status bar, folders first, no extension warnings)
+   - Mail (conversation view settings)
+4. **Restarts affected apps** - Restarts Dock, Finder, Mail, SystemUIServer
+
+### Profile System
+
+The `.data.work` boolean controls package installation:
+- **Work profile** (`work = true`): Installs Postman
+- **Personal profile** (`work = false`): Installs Audacity, IINA, Meta, Soulseek, Tiny Player
+
+### Zsh Configuration
+
+The `dot_zshrc` file is a complete, standalone configuration that includes:
+- Environment variables (EDITOR=vim, PATH setup for Homebrew)
+- Completion system with case-insensitive matching
+- History configuration with deduplication
+- Tool integrations: zoxide (cd replacement), mise (runtime manager), starship (prompt)
+- Sources `~/.zshrc.secrets` if present for sensitive variables
+
+## Common Patterns
+
+### Adding a New App to Brewfile
+```bash
+# Edit Brewfile.tmpl
+chezmoi edit ~/Brewfile
+
+# Add to appropriate section:
+cask 'app-name'  # For all profiles
+
+# OR for profile-specific:
+{{- if .data.work }}
+cask 'work-only-app'
+{{- end }}
+
+# Commit and apply
+chezmoi apply  # This triggers package installation
+```
+
+### Adding a macOS Default
+```bash
+# Edit the setup script
+chezmoi edit -a ~/.local/share/chezmoi/run_onchange_after_apply_install-packages.sh.tmpl
+
+# Add your defaults write command in the "Configure macOS defaults" section
+# Example: defaults write com.apple.finder ShowHiddenFiles -bool true
+
+# Apply (this will run the script)
+chezmoi apply
+```
+
+### Changing Git Configuration
+```bash
+# Edit the template
+chezmoi edit ~/.gitconfig
+
+# Changes to .data values require editing .chezmoidata.toml
+# Changes to template structure are in dot_gitconfig.tmpl
+```
