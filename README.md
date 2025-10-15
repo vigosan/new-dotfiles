@@ -9,10 +9,14 @@ Automated dotfiles configuration for Mac with chezmoi.
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles
 ```
 
-That's it! This will:
+During setup, you'll be prompted for:
+- Git email: `your-email@example.com`
+- Git name: `Your Name`
+- Use work profile: `y/n` (affects which apps get installed)
+
+This will:
 - Install chezmoi and Homebrew
-- Prompt for your git email and name
-- Install all packages from Brewfile
+- Install packages based on your profile (work vs personal)
 - Configure zsh, git, Zed editor
 - Apply macOS system defaults (dock, trackpad, finder, etc.)
 
@@ -61,6 +65,10 @@ chezmoi managed         # List managed files
 - Development tools (git, neovim, mise)
 - Applications (1Password, Docker, Raycast, etc.)
 - Mac App Store apps (Xcode, Slack, etc.)
+
+**Profile-specific packages:**
+- **Work profile**: Postman (API development)
+- **Personal profile**: Audacity (audio editing), Soulseek (music)
 
 ## Structure
 
