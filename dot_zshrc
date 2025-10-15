@@ -1,0 +1,55 @@
+#!/usr/bin/env zsh
+
+export CLICOLOR=1
+export EDITOR=vim
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-ignore-vcs --glob "!{**/node_modules/*,.git/*,public/*}"'
+export GIT_EDITOR=vim
+export KEYTIMEOUT=1
+export LC_ALL=en_US.UTF-8
+# Base PATH - mise and other tools will extend this
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+export TERM="xterm-256color"
+export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+
+set -o emacs
+
+zstyle ':completion:*' menu select
+zstyle ':completion:*' completer _complete
+zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'
+
+autoload -U compinit && compinit
+autoload -U colors && colors
+autoload -U bashcompinit && bashcompinit
+autoload -U select-word-style
+select-word-style bash
+zmodload -i zsh/complist
+
+unsetopt menu_complete
+unsetopt flowcontrol
+
+setopt prompt_subst
+setopt always_to_end
+setopt append_history
+setopt auto_menu
+setopt complete_in_word
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt interactivecomments
+setopt share_history
+setopt auto_cd
+
+
+# ssh - automatically add available SSH keys
+for key_file in ~/.ssh/id_*; do
+  [[ -f "$key_file" && ! "$key_file" =~ \.pub$ ]] && {
+    [[ -z $(ssh-add -L 2>/dev/null | grep -F "$(ssh-keygen -lf "$key_file" 2>/dev/null | awk '{print $2}')") ]] && ssh-add "$key_file" 2>/dev/null
+  }
+done
+
+eval "$(zoxide init --cmd z zsh)"
+eval "$(starship init zsh)"
+eval "$(mise activate zsh)"
