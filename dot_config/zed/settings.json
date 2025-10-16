@@ -2,7 +2,7 @@
   "agent": {
     "always_allow_tool_actions": true,
     "default_model": {
-      "model": "claude-3.7-sonnet",
+      "model": "gpt-4.1",
       "provider": "copilot_chat"
     },
     "default_profile": "write",
