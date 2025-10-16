@@ -1,102 +1,26 @@
 {
-	"agent": {
-		"default_profile": "write",
-		"always_allow_tool_actions": true,
-		"model_parameters": [],
-		"default_model": {
-			"provider": "copilot_chat",
-			"model": "claude-3.7-sonnet"
-		}
-	},
-	"buffer_font_size": null,
-	"ui_font_family": "MonoLisa",
-	"autosave": "off",
-	"collaboration_panel": {
-		"button": false
-	},
-	"format_on_save": "off",
-	"features": {
-		"edit_prediction_provider": "copilot"
-	},
-	"indent_guides": {
-		"enabled": true
-	},
-	"soft_wrap": "editor_width",
-	"preferred_line_length": 80,
-	"project_panel": {
-		"button": true,
-		"dock": "right",
-		"sticky_scroll": false
-	},
-	"show_call_status_icon": false,
-	"terminal": {
-		"button": false,
-		"font_family": "MonoLisa"
-	},
-	"notification_panel": {
-		"button": false
-	},
-	"scrollbar": {
-		"show": "auto"
-	},
-	"tab_size": 2,
-	"tab_bar": {
-		"show": true,
-		"show_nav_history_buttons": false,
-		"show_tab_bar_buttons": false
-	},
-	"theme": "Tokyo Night Storm",
-	"telemetry": {
-		"diagnostics": false,
-		"metrics": false
-	},
-	"toolbar": {
-		"breadcrumbs": false,
-		"quick_actions": false,
-		"selections_menu": false
-	},
-	"lsp": {
-		"biome": {
-			"settings": {
-				"require_config_file": true
-			}
-		},
-		"tailwindcss-language-server": {
-			"settings": {
-				"classAttributes": ["class", "className", "cn"]
-			}
-		},
-		"ruby-lsp": {
-			"initialization_options": {
-				"enabledFeatures": {
-					"diagnostics": false,
-					"formatting": true
-				},
-				"formatter": "standard"
-			}
-		}
-	},
-	"languages": {
-		"JavaScript": {
-			"formatter": "language_server"
-		},
-		"TypeScript": {
-			"formatter": "language_server"
-		},
-		"TSX": {
-			"formatter": "language_server"
-		},
-		"JSON": {
-			"formatter": "language_server"
-		},
-		"Ruby": {
-			"tab_size": 2,
-			"language_servers": ["ruby-lsp", "!solargraph", "!rubocop"],
-			"formatter": "language_server",
-			"format_on_save": "on"
-		}
-	},
-	"formatter": [
+  "agent": {
+    "always_allow_tool_actions": true,
+    "default_model": {
+      "model": "claude-3.7-sonnet",
+      "provider": "copilot_chat"
+    },
+    "default_profile": "write",
+    "model_parameters": []
+  },
+  "autosave": "off",
+  "buffer_font_size": null,
+  "collaboration_panel": {
+    "button": false
+  },
+  "edit_predictions": {
+    "mode": "subtle"
+  },
+  "features": {
+    "edit_prediction_provider": "copilot"
+  },
+  "format_on_save": "off",
+  "formatter": [
     {
       "code_action": "source.fixAll.biome"
     },
@@ -109,9 +33,93 @@
       }
     }
   ],
-	"vim_mode": false,
-	"edit_predictions": {
-		"mode": "subtle"
-	},
-	"hard_tabs": false
+  "hard_tabs": false,
+  "indent_guides": {
+    "enabled": true
+  },
+  "languages": {
+    "JavaScript": {
+      "formatter": "language_server"
+    },
+    "JSON": {
+      "formatter": "language_server"
+    },
+    "Ruby": {
+      "format_on_save": "on",
+      "formatter": "language_server",
+      "language_servers": [
+        "ruby-lsp",
+        "!solargraph",
+        "!rubocop"
+      ],
+      "tab_size": 2
+    },
+    "TSX": {
+      "formatter": "language_server"
+    },
+    "TypeScript": {
+      "formatter": "language_server"
+    }
+  },
+  "lsp": {
+    "biome": {
+      "settings": {
+        "require_config_file": true
+      }
+    },
+    "ruby-lsp": {
+      "initialization_options": {
+        "enabledFeatures": {
+          "diagnostics": false,
+          "formatting": true
+        },
+        "formatter": "standard"
+      }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classAttributes": [
+          "class",
+          "className",
+          "cn"
+        ]
+      }
+    }
+  },
+  "notification_panel": {
+    "button": false
+  },
+  "preferred_line_length": 80,
+  "project_panel": {
+    "button": true,
+    "dock": "right",
+    "sticky_scroll": false
+  },
+  "scrollbar": {
+    "show": "auto"
+  },
+  "show_call_status_icon": false,
+  "soft_wrap": "editor_width",
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false,
+    "show_tab_bar_buttons": false
+  },
+  "tab_size": 2,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "terminal": {
+    "button": false,
+    "font_family": "MonoLisa"
+  },
+  "theme": "Tokyo Night Storm",
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false,
+    "selections_menu": false
+  },
+  "ui_font_family": "MonoLisa",
+  "vim_mode": false
 }
