@@ -40,7 +40,7 @@ mas 'Pages', id: 409201541
 # mas 'Pixelmator Pro', id: 1289583905
 mas 'Xcode', id: 497799835
 
-{{- if ( and (hasKey . "data") (hasKey .data "work") ( eq .data.work true) ) }}
+{{- if .work }}
 
 # Work profile only
 cask 'postman'
