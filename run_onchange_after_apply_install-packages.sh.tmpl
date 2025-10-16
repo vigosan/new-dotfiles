@@ -96,12 +96,6 @@ defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 # Only show time
 defaults write com.apple.menuextra.clock "DateFormat" -string "\"HH:mm:ss\""
 
-## Keyboard
-# Map Caps Lock to Control
-defaults -currentHost write -g com.apple.keyboard.modifiermapping.1452-0-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
-# Alternative method for some keyboards
-defaults -currentHost write -g com.apple.keyboard.modifiermapping.0-0-0 -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
-
 # Trackpad
 defaults write com.apple.AppleMultitouchTrackpad "TrackpadThreeFingerDrag" -bool "true" # Drag windows with 3 fingers
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool "true" # Tap to click
