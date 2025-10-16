@@ -16,7 +16,7 @@ This is a standalone chezmoi repository for managing dotfiles and macOS system c
 
 ### Key Features
 - **Profile-based configuration**: Work vs personal profiles affect which apps get installed
-- **One-command setup**: `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles`
+- **One-command setup**: `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/dotfiles`
 - **Automated package installation**: Brewfile with conditional packages based on profile
 - **macOS system defaults**: Comprehensive defaults for Dock, Finder, trackpad, keyboard, etc.
 - **Template-based personalization**: Git config and Brewfile use templates with user-specific data
@@ -186,7 +186,7 @@ To set up a new Mac with this configuration:
 
 ```bash
 # One-command setup (installs chezmoi, clones repo, applies config)
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/dotfiles
 ```
 
 This will:

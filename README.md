@@ -6,7 +6,7 @@ Automated dotfiles configuration for Mac with chezmoi.
 
 ```bash
 # Install chezmoi and initialize (all-in-one)
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/new-dotfiles
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply vigosan/dotfiles
 ```
 
 During setup, you'll be prompted for:
@@ -92,7 +92,7 @@ After setup, manually install or login to App Store and uncomment in Brewfile:
 chezmoi doctor
 
 # Reinitialize if needed
-chezmoi init --force vigosan/new-dotfiles
+chezmoi init --force vigosan/dotfiles
 
 # Test templates
 chezmoi execute-template < ~/.local/share/chezmoi/dot_gitconfig.tmpl
