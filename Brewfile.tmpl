@@ -38,13 +38,13 @@ mas 'Keynote', id: 409183694
 mas 'Numbers', id: 409203825
 mas 'Pages', id: 409201541
 # mas 'Pixelmator Pro', id: 1289583905
-mas 'Slack', id: 803453959
 mas 'Xcode', id: 497799835
 
 {{- if ( and (hasKey . "data") (hasKey .data "work") ( eq .data.work true) ) }}
 
 # Work profile only
 cask 'postman'
+mas 'Slack', id: 803453959
 
 {{- else }}
 

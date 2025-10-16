@@ -1,0 +1,3 @@
+# Machine-specific chezmoi configuration
+# Each machine should generate this by running chezmoi init
+.chezmoidata.toml
