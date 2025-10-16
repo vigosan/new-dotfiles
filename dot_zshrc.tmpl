@@ -27,11 +27,6 @@ export PATH="$HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 [[ -f ~/.zsh.alias ]] && source ~/.zsh.alias
 
-{{- if .data.work }}
-# Work-specific aliases
-alias claude='env AWS_PROFILE=ai_codegen CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL="arn:aws:bedrock:us-east-1:193501891505:inference-profile/us.anthropic.claude-sonnet-4-20250514-v1:0" claude'
-{{- end }}
-
 # ============================================================================
 # Completion System
 # ============================================================================
