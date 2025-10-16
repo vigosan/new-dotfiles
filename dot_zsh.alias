@@ -1,0 +1,29 @@
+# ============================================================================
+# Git Functions
+# ============================================================================
+
+function git_current_branch() {
+  local ref
+  ref=$(__git_prompt_git symbolic-ref --quiet HEAD 2> /dev/null)
+  local ret=$?
+  if [[ $ret != 0 ]]; then
+    [[ $ret == 128 ]] && return  # no git repo.
+    ref=$(__git_prompt_git rev-parse --short HEAD 2> /dev/null) || return
+  fi
+  echo ${ref#refs/heads/}
+}
+
+# ============================================================================
+# Git Aliases
+# ============================================================================
+
+alias gclean='git clean -id'
+alias gco='git checkout'
+alias ggpull='git pull origin "$(git_current_branch)"'
+alias ggpush='git push origin "$(git_current_branch)"'
+alias gpf!='git push --force'
+alias gpf='git push --force-with-lease'
+alias gpristine='git reset --hard && git clean -dffx'
+alias gr='git reset'
+alias grh='git reset --hard'
+alias groh='git reset origin/$(git_current_branch) --hard'
