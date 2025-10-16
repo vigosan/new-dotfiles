@@ -114,10 +114,10 @@ chezmoi data
 - `Brewfile` - Homebrew packages (profile-dependent)
 
 ### Template Variables
-Templates have access to these variables via `.data`:
-- `{{ .data.name }}` - User's full name
-- `{{ .data.email }}` - User's email address
-- `{{ .data.work }}` - Boolean for work vs personal profile
+Templates have access to these variables directly:
+- `{{ .name }}` - User's full name
+- `{{ .email }}` - User's email address
+- `{{ .work }}` - Boolean for work vs personal profile
 - `{{ .chezmoi.homeDir }}` - Home directory path
 
 ## Working with This Repository
@@ -138,13 +138,13 @@ Templates have access to these variables via `.data`:
    chezmoi add --template ~/.someconfig
 
    # Edit the created .tmpl file to add template variables
-   # Example: {{ .data.email }} or {{ .data.work }}
+   # Example: {{ .email }} or {{ .work }}
    ```
 
 3. **Profile-specific packages** (work vs personal):
    ```bash
    # Edit Brewfile.tmpl and add to appropriate section:
-   {{- if .data.work }}
+   {{- if .work }}
    cask 'work-app'
    {{- else }}
    cask 'personal-app'
@@ -175,8 +175,8 @@ chezmoi execute-template < file.tmpl
 chezmoi data
 
 # Common template patterns:
-# - Conditional: {{- if .data.work }}...{{- end }}
-# - Variable: {{ .data.email | quote }}
+# - Conditional: {{- if .work }}...{{- end }}
+# - Variable: {{ .email | quote }}
 # - Home dir: {{ .chezmoi.homeDir }}
 ```
 
@@ -217,7 +217,7 @@ This script is the heart of system setup and runs whenever its content changes. 
 
 ### Profile System
 
-The `.data.work` boolean controls package installation:
+The `.work` boolean controls package installation:
 - **Work profile** (`work = true`): Installs Postman
 - **Personal profile** (`work = false`): Installs Audacity, IINA, Meta, Soulseek, Tiny Player
 
@@ -241,7 +241,7 @@ chezmoi edit ~/Brewfile
 cask 'app-name'  # For all profiles
 
 # OR for profile-specific:
-{{- if .data.work }}
+{{- if .work }}
 cask 'work-only-app'
 {{- end }}
 
