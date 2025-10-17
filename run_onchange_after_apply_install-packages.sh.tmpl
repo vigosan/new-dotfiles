@@ -44,6 +44,31 @@ else
   echo "Brewfile not found at $HOME/Brewfile"
 fi
 
+# Configure GitHub CLI and Copilot
+if command -v gh >/dev/null 2>&1; then
+  echo "Configuring GitHub CLI and Copilot..."
+
+  # Install GitHub Copilot extension if not already installed
+  if ! gh extension list | grep -q "github/gh-copilot"; then
+    echo "Installing GitHub Copilot CLI extension..."
+    gh extension install github/gh-copilot
+    echo "GitHub Copilot extension installed!"
+  else
+    echo "GitHub Copilot extension already installed."
+  fi
+
+  # Check if user is authenticated
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "⚠️  GitHub CLI is not authenticated."
+    echo "💡 Please run 'gh auth login' to authenticate and enable Copilot features."
+    echo "   This step requires interactive authentication with your GitHub account."
+  else
+    echo "✅ GitHub CLI is already authenticated."
+  fi
+else
+  echo "GitHub CLI (gh) not found. Install it first with: brew install gh"
+fi
+
 # Configure macOS defaults
 echo "Setting macOS defaults..."
 

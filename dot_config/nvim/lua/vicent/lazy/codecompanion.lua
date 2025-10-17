@@ -25,7 +25,7 @@ return {
       },
       schema = {
         model = {
-          default = "claude-3.5-sonnet",
+          default = "claude-sonnet-4",
         },
       }
     })
