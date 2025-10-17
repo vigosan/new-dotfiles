@@ -12,6 +12,11 @@ export LC_ALL=en_US.UTF-8
 export TERM="xterm-256color"
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
+# libyaml configuration
+export LDFLAGS="-L/opt/homebrew/opt/libyaml/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/libyaml/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/libyaml/lib/pkgconfig"
+
 # Base PATH - include local bin for chezmoi and other tools
 export PATH="$HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
 
