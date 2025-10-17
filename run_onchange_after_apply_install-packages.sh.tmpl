@@ -94,15 +94,13 @@ if command -v dockutil >/dev/null 2>&1; then
   dockutil --no-restart --add "/System/Applications/Calendar.app"
   dockutil --no-restart --add "/Applications/iTerm.app"
   dockutil --no-restart --add "/System/Applications/Music.app"
+{{- if .work }}
   dockutil --no-restart --add "/Applications/Slack.app"
+{{- end }}
   dockutil --no-restart --add "/System/Applications/System Settings.app"
   dockutil --no-restart --add '~/Documents'
   dockutil --no-restart --add '~/Downloads'
 fi
-
-# Safari
-# Show full URL in Safari
-defaults write com.apple.Safari "ShowFullURLInSmartSearchField" -bool "true"
 
 ## Screen
 # Save screenshots to the desktop
@@ -141,15 +139,9 @@ defaults write com.apple.finder WarnOnEmptyTrash -bool false
 # New Finder windows show home directory
 defaults write com.apple.finder NewWindowTargetPath -string "file://{{ .chezmoi.homeDir }}/"
 
-## Mail
-# Mark all messages as read when opening a conversation
-defaults write com.apple.mail ConversationViewMarkAllAsRead -bool true
-# Show most recent message at the top in conversations
-defaults write com.apple.mail ConversationViewSortDescending -bool true
-
 # Restart affected applications
 echo "Restarting affected applications..."
-for app in "Dock" "Finder" "Mail" "SystemUIServer"; do
+for app in "Dock" "Finder" "SystemUIServer"; do
   killall "${app}" &> /dev/null
 done
 
