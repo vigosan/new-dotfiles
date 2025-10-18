@@ -51,6 +51,8 @@
 - **State**: Domain-specific contexts + custom hooks
 
 ### Architecture
+
+**Simple projects**:
 ```
 src/
 ├── components/  # Reusable UI
@@ -60,148 +62,48 @@ src/
 ├── types/       # TypeScript
 ├── utils/       # Pure functions
 ├── pages/       # Page components
-├── test/        # Test utils
-└── locales/     # i18n
+└── test/        # Test utils
 ```
 
-## SOLID Principles
+**Complex projects**: Use [Clean Architecture](frontend-clean-architecture-guidelines.md) with Domain/Application/Services/UI layers for better testability and maintainability.
 
-### Single Responsibility (SRP)
-**Rule**: One reason to change per component
-
-**Violation signals**: "and" in description, multiple change reasons, large prop interfaces, mixed concerns
-
-**Pattern**: Layered architecture
-```typescript
-// Data Layer (hooks)
-const useBooks = () => { /* fetch logic */ };
-
-// Presentation (pure)
-const BookList = ({ books, onBookClick }) => { /* render only */ };
-
-// Container (orchestration)
-const BookListContainer = () => {
-  const { books } = useBooks();
-  return <BookList books={books} onBookClick={handleClick} />;
-};
-```
-
-### Open-Closed Principle (OCP)
-**Rule**: Open for extension, closed for modification
-
-```typescript
-// ❌ VIOLATES: Modifying for new types
-const Book = ({ type, onClickFree, onClickPremium }) => {
-  return <div>{type === "Premium" && <button onClick={onClickPremium}>...</button>}</div>;
-};
-
-// ✅ FOLLOWS: Extensible via composition
-const Book = ({ title, image, children }) => (
-  <div><img src={image} /><h3>{title}</h3>{children}</div>
-);
-
-// Extend without modifying
-const PremiumBook = ({ title, image, onAddToCart }) => (
-  <Book title={title} image={image}>
-    <button onClick={onAddToCart}>Add to cart</button>
-  </Book>
-);
-```
-
-**Strategies**: children prop, render props, HOCs, compound components
-
-### Liskov Substitution (LSP)
-**Rule**: Child components substitutable for parent
-
-```typescript
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-}
-
-const Button = ({ children, className = "", ...props }: ButtonProps) => (
-  <button className={`btn ${className}`} {...props}>{children}</button>
-);
-
-// ✅ LSP COMPLIANT: DangerButton can substitute Button
-const DangerButton = ({ children, className = "", ...props }: ButtonProps) => (
-  <button className={`btn btn-danger ${className}`} {...props}>{children}</button>
-);
-```
-
-**Guidelines**: Same interface, preserve behavior, extend don't restrict
-
-### Interface Segregation (ISP)
-**Rule**: Components shouldn't depend on unused interfaces
-
-```typescript
-// ❌ VIOLATES: Fat interface
-interface BookCardProps {
-  book: Book;
-  onEdit: () => void;    // Not always used
-  onDelete: () => void;  // Not always used
-  showActions: boolean;  // Not always needed
-}
-
-// ✅ FOLLOWS: Minimal interfaces
-const BookTitle = ({ title }: { title: string }) => <h3>{title}</h3>;
-const BookImage = ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />;
-
-const BookCard = ({ title, image, actions }: {
-  title: string;
-  image: string;
-  actions?: ReactNode;
-}) => (
-  <div>
-    <BookImage src={image} alt={title} />
-    <BookTitle title={title} />
-    {actions}
-  </div>
-);
-```
-
-**Strategies**: Pass specific props (not entire objects), split fat interfaces, use composition
+## Architecture Principles
 
 ### Dependency Inversion (DIP)
-**Rule**: Depend on abstractions, not implementations
+Decouple components from implementations - depend on abstractions.
 
 ```typescript
-// ❌ VIOLATES: Direct coupling
+// ❌ Direct coupling
 const UserList = () => {
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    fetch('/api/users').then(res => res.json()).then(setUsers);
-  }, []);
-  return <div>{users.map(u => <UserCard key={u.id} user={u} />)}</div>;
+  useEffect(() => { fetch('/api/users')... }, []);
+  // ...
 };
 
-// ✅ FOLLOWS: Abstraction layer
-interface UserRepository {
-  getUsers(): Promise<User[]>;
-}
-
-const useUsers = (repository: UserRepository) => {
-  const [users, setUsers] = useState<User[]>([]);
-  useEffect(() => { repository.getUsers().then(setUsers); }, [repository]);
-  return users;
-};
-
+// ✅ Abstraction via props/hooks
 const UserList = ({ userRepository }: { userRepository: UserRepository }) => {
   const users = useUsers(userRepository);
-  return <div>{users.map(u => <UserCard key={u.id} user={u} />)}</div>;
+  // ...
 };
-
-// Implementations
-class ApiUserRepository implements UserRepository {
-  async getUsers() { return fetch('/api/users').then(r => r.json()); }
-}
-class MockUserRepository implements UserRepository {
-  async getUsers() { return [{ id: 1, name: 'Test' }]; }
-}
 ```
 
 **Patterns**: Inject via props, context for global deps, repository pattern
 
-## SOLID Benefits
-- **Maintainability**: Easy to understand/modify, safe replacements, minimal dependencies
-- **Testability**: Isolated concerns, mock dependencies, focused tests
-- **Reusability**: Composable components, flexible interfaces, pluggable implementations
+### Component Composition
+- **Single Responsibility**: One concern per component
+- **Open-Closed**: Extend via composition (children, render props), not modification
+- **Interface Segregation**: Minimal, focused props
+
+```typescript
+// Extensible via composition
+const Card = ({ children }) => <div className="card">{children}</div>;
+
+// Specific variants
+const UserCard = () => (
+  <Card>
+    <Avatar />
+    <UserInfo />
+  </Card>
+);
+```
+
+**For full SOLID principles and layered architecture**, see [Clean Architecture](frontend-clean-architecture-guidelines.md).

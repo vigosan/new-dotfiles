@@ -4,6 +4,7 @@
 - **[Core](core-guidelines.md)**: Philosophy, workflow (commit hygiene, tracer bullets, planning), refactoring, standards
 - **[Backend](backend-guidelines.md)**: Node.js 2025, JSON:API, repository pattern
 - **[Frontend](frontend-guidelines.md)**: React 2025, SOLID, stack (Vitest, TanStack Query/Router, Tailwind)
+- **[Frontend Clean Architecture](frontend-clean-architecture-guidelines.md)**: Clean Architecture patterns for React/TypeScript (Domain, Application, Services, UI layers)
 - **[Infrastructure](infrastructure-guidelines.md)**: Docker, orchestration, security
 
 ## New Project Setup
